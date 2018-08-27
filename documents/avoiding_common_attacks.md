@@ -6,22 +6,22 @@ All external transactions are called last, with the exception of event emissions
 
 There are three functions that are at-risk of risk conditions, largely because they involve transfers of ETH.
 
-- **1) SubscriptionWallet.Subscribe()** – The function is initiated by a subscriber wanting to subscribe to something. It is designed as a function that does require an external function, but only to ensure state is updated across both contracts. There is no risk of re-entrancy, as there is no motivation or benefit to pay a Subscription multiple times. There is also no risk of cross-function race, as there are no other functions that set isActive to true on the SubscriptionManager side. The contract automatically reverts in all failed conditions.
-- **2) SubscriptionManager.RequestPayment()** – There is motivation for the owner of a SubscriptionManager function to call this multiple times to try to game the timing. The main protection is that lastPaymentDate is updated before transferring any amount back to the owner. If the function is called again, it should revert because it falls the lastPaymentDate condition. There is also no risk of a cross-function race as there are no other functions that can modify lastPaymentDate outside of this function. The contract automatically reverts in all failed conditions.
-- **3) SubscriptionManager.withdraw() or SubscriptionWallet.withdraw()** – There is very little risk here of race conditions. The only caller is the owner, and there is a finite amount of ether in the contract.
+- **1) SubscriptionWallet.Subscribe()** – The function is initiated by a subscriber wanting to subscribe to something. It is designed as a function that does require an external function, but only to ensure state is updated across both contracts. There is no risk of re-entrancy, as there is no risk, motivation or benefit to pay a Subscription multiple times; the contract will accept extra payments.  There is also no risk of cross-function race, as there are no other functions that set isActive to true on the SubscriptionManager side. The contract automatically reverts in all failed conditions.
+- **2) SubscriptionManager.RequestPayment()** – There is motivation for the owner of a SubscriptionManager function to call this multiple times to try to game the timing. The main protection is that lastPaymentDate is updated before transferring any amount back to the owner. If the function is called again, it should revert because it fails the lastPaymentDate condition. There is also no risk of a cross-function race as there are no other functions that can modify lastPaymentDate outside of this function. The contract automatically reverts in all failed conditions.
+- **3) SubscriptionManager.withdraw() or SubscriptionWallet.withdraw()** – There is very little risk here of race conditions. The only caller is the owner, and there is a finite amount of ether in the contract to withdraw.
 
 ## Integer Overflow
 
-We implemented SafeMath for the very little math that is used in these contracts. This ensures against integer overflow in those specific cases.
+We implemented the SafeMath library for the very little math that is used in these contracts. This ensures against integer overflow in those specific cases.
 
-Functions have also been checked for negative values where relevant. For example,
+Functions have also been checked for negative values where relevant. For example:
 
-- SubscriptionManager.ownerUpdatePrice() checks if the new price is negative before updating.
+- SubscriptionManager.ownerUpdatePrice() checks if the new price is negative before updating
 - All fallback functions check for msg.value > 0
 
 ## DoS Attacks
 
-There is only one function that implements a looped array with indefinite length, which is a function that can only be called by the SubscriptionManager contract owner, given a set of arrays. If this exceeds the block gas limit, it will simply fail and require the owner to pay the gas costs for the failed transaction and try again.
+There is only one function that implements a looped array with indefinite length, which is a function that can only be called by the SubscriptionManager contract owner, given a set of arrays as a parameter. If this exceeds the block gas limit, it will simply fail and require the owner to pay the gas costs for the failed transaction and try again. There is minimal risk here largely because this can only be called by the owner of the contract. 
 
 There are some potential issues with the contract functions requiring too much gas in general, and that is something that is worth investigating further before deployment in any more meaningful capacity.
 

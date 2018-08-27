@@ -32,25 +32,24 @@ This project requires ganache-cli and lite-server.
 
 ## 1. Setup Ganache CLI
 
-Please start ganache-cli with a block gas price limit that is greater than 9999999. That should be able to guarantee that all transactions on this App will go through. Contract executions don't take this much gas, but we use this maximum just a precaution.
-
-Please use the below parameter to launch ganache-cli:
+Please start ganache-cli with a block gas price limit that is greater than 9999999. That should be able to guarantee that all transactions on this App will go through. Contract executions don't take this much gas, but we use this maximum just a precaution. Please use the below parameter to launch ganache-cli:
 
     ganache-cli -l 9999999
 
 ## 2. Setup Metamask
 
-Please use the Mnemonic provided by ganache-cli to set up your Metamask wallet in your preferred browser of choice. ****Press the Metamask icon, logout and press "Import using account seed phrase.
-
-Please also reset Metamask by going into Settings > Reset Account. There are known errors
+Please use the Mnemonic provided by ganache-cli to set up your Metamask wallet in your preferred browser of choice. Press the Metamask icon, logout and press "Import using account seed phrase. Please also reset Metamask by going into Settings > Reset Account. There are known errors as a result of Metamask caching the nonce count.
 
 ## 3. Setup Truffle
 
-Run truffle migrate to instantiate the
+Run truffle migrate to instantiate the initial factory contracts and to create the JSON ABIs.
 
     truffle migrate
 
-**Note on 'truffle-test'** – There are 22 tests that are implemented in this project. There are two tests that occasionally fail due to imprecise gas price estimations being returned. The GasPrice variable returned is sometimes off by 1, and overestimates
+**Note on 'truffle-test'** – There are 23 tests that are implemented in this project. There are two tests that occasionally fail due to imprecise gas price estimations being returned. The GasPrice variable returned is sometimes off by 1 and returns a balance that is off by a small amount. The two tests in question are below: 
+
+- Owner should be able to withdraw funds with SubscriptionManager contract
+- Owner should be able to withdraw specified funds with SubscriptionManager contract
 
 ## 4. Start lite-server
 

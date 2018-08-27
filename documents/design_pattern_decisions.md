@@ -8,11 +8,11 @@ The subscription pattern has been invested quite a bit in the context of blockch
 
 I do not purport that my implementation of subscriptions should be standardized in anyway, but is a proof-of-concept for a subscription pattern that might work. This system assumes and optimized for several factors:
 
-1) We believe the the gas costs of processing individual subscriptions should be the onus of the owner of the Subscription. This is analogous to credit card processing fees – consumers don't expect to pay for transaction costs when payments are processed. The only exception is upon subscribe, but users need to initiate that transaction in any scenario anyways. 
+1) We believe the the gas costs of processing individual subscriptions should be the onus of the owner of the Subscription. This is analogous to credit card processing fees – consumers don't expect to pay for transaction costs when payments are processed; while service providers do. The only exception is upon subscribe, but users need to initiate that transaction in any scenario and pay gas costs anyways.
 
-2) It does not require staking, but it does require the subscriber to keep a wallet funded at any given time, and the onus is on them to do so. We do not believe this to be a particularly onerous, as the user is able to fund or withdraw money from this contract at will.
+2) It does not require staking (as in locked up ETH), but it does require the subscriber to keep a wallet funded at any given time, and the onus is on them to do so. We do not believe this to be a particularly onerous, as the user is able to fund or withdraw money from this contract at will.
 
-3) We believe it is important to standardize a set of contracts that is usable across a large number of applications, and so the contracts are not particularly opinionated outside of this withdrawal pattern.
+3) We believe it is important to standardize a set of contracts that is usable across a large number of applications, and so the contracts are not particularly opinionated outside of this withdrawal pattern. A lot of the automation can be implemented on the front-end, and it is the onus of the subscription owner to manage processing of payment requests.
 
 We use a withdraw pattern simply because it is the simplest way to execute, and the use of a pair of contracts in order to facilitate a standardized authorization and withdrawal pattern is the key behind this subscription design. A withdrawal pattern is also safest, because we are able to enforce expected conditions on the wallet being withdrawn from to revert or throw errors on any unexpected conditions upon a withdraw request (a change in price or an unauthorized address, for example).
 
@@ -30,7 +30,7 @@ All of these functions are implemented as contract calls instead of low-level ca
 
 ## Implementation of Restricted Access
 
-Restricted access is also a common pattern that is used in many smart contracts. There are a number of functions that are reserved for the owner to use and a different set of function that are reserved for a complementary SubscriptionWallet / SubscriptionManager contract to use. This is also implemented across a few getter functions that allows different levels of information to be accessed by the owner of the subscription, a subscriber and a random person. For example, an individual can access their subscription information only if they are the actual subscriber; in all other cases, the functions would return default values.
+Restricted access is also a common pattern that is used in many smart contracts. There are a number of functions that are reserved for the owner to use and a different set of function that are reserved for a complementary SubscriptionWallet / SubscriptionManager contract to use. This is also implemented across a few getter functions that allows different levels of information to be accessed by the owner of the subscription, a subscriber and a random person. For example, an individual can access their subscription information only if they are the actual subscriber; in all other cases, the functions would return default or null values.
 
 ## Implementation of Circuit Breakers
 
