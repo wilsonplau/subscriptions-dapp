@@ -2,6 +2,9 @@ pragma solidity ^0.4.23;
 import './SubscriptionManager.sol';
 import './SafeMath.sol';
 
+/** @title Subscription Wallet Contract
+  * @author Wilson Lau
+*/
 contract SubscriptionWallet {
   using SafeMath for uint;
 
@@ -32,6 +35,10 @@ contract SubscriptionWallet {
   }
 
   /****** --------------- SUBSCRIPTION MANAGER FUNCTION ------------ ******/
+  /**
+    * @notice requestPayment is accessed by the SubscriptionManager contracts
+    * @param _amount Takes the amount requested by the SubscriptionManager; should equal SubscriptionPrice
+  */
   function requestPayment(uint _amount)
     public
     verifySubscription
@@ -94,6 +101,9 @@ contract SubscriptionWallet {
     }
   }
 
+  /**
+    * @notice Circuit breaker; toggles pause state on contract
+  */
   function togglePauseWallet ()
     public
     verifyOwner
@@ -116,6 +126,8 @@ contract SubscriptionWallet {
   }
 
   /**
+    * @notice Unsubscribe calls the unsubscribe() function on the SubscriptionManager contract
+    ** @param _addr - refers to SubscriptionManager address
   */
   function unsubscribe (address _addr)
     public
@@ -144,6 +156,8 @@ contract SubscriptionWallet {
   }
 
   /**
+    * @notice Subscriber needs to be able to check their subscriptionStatus
+    * @param _addr - Address of the subscription contract in question
   */
   function checkSubscriptionStatus(address _addr)
     public
@@ -154,6 +168,10 @@ contract SubscriptionWallet {
     return SubscriptionManager(_addr).checkSubscriptionStatus();
   }
 
+  /**
+    * @notice Subscriber needs to be able to check their lastPaymentDate
+    * @param _addr - Address of the subscription contract in question
+  */
   function checkLastPaymentDate(address _addr)
     public
     view
@@ -162,18 +180,5 @@ contract SubscriptionWallet {
   {
     return SubscriptionManager(_addr).checkLastPaymentDate();
   }
-
-  /**
-    * @notice Subscriber need to be able to authorize price changes if SubscriptionManager changes price
-  */
-  function checkLastPaymentInfo(address _addr)
-    public
-    view
-    verifyOwner
-    returns (address, bool, uint)
-  {
-    return (_addr, SubscriptionManager(_addr).checkSubscriptionStatus(), SubscriptionManager(_addr).checkLastPaymentDate());
-  }
-
 
 }

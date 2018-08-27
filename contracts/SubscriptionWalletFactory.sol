@@ -1,6 +1,9 @@
 import './SubscriptionWallet.sol';
 pragma solidity ^0.4.23;
 
+/** @title Subscription Wallet Factory Contract
+  * @author Wilson Lau
+*/
 contract SubscriptionWalletFactory {
   address public owner;
   mapping (address => address[]) private created;
@@ -12,6 +15,9 @@ contract SubscriptionWalletFactory {
     owner = msg.sender;
   }
 
+  /**
+    * @notice Creates subscriptionWallet contract; passes along msg.sender to set as owner
+  */
   function createSubscriptionWallet()
     public
   {

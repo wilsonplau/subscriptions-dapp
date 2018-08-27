@@ -5,9 +5,7 @@ const SubscriptionWallet = artifacts.require('./SubscriptionWallet');
 
 contract('SubscriptionManager', async (accounts) =>  {
 
-  /**
-    * Sets up a bunch of variables and contracts that are used in all of the below contracts
-  */
+  //Sets up a bunch of variables and contracts that are used in all of the below contracts
   let subMgrFactory;
   let subMgrAddress;
   let subMgr;
@@ -23,10 +21,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     subMgr = SubscriptionManager.at(subMgrAddress);
   });
 
-  /****** ------------------------------ OWNER TESTS --------------------------- ******/
-  /**
-    * The owner of a SubscriptionManager should be able to all withdraw funds from the contract.
-  */
+  //The owner of a SubscriptionManager should be able to all withdraw funds from the contract.
   it ("Owner should be able to withdraw funds with SubscriptionManager contract", async () => {
     let sentAmount = web3.toWei(1, 'ether');
     subMgr.sendTransaction({value: sentAmount, from: accounts[9]});
@@ -51,9 +46,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(sentAmount, (endingBalance + transactionCosts - startingBalance), "Amount in contract is fully withdrawn");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to withdraw a variable amount of funds from the contract.
-  */
+  //The owner of a SubscriptionManager should be able to withdraw a variable amount of funds from the contract.
   it ("Owner should be able to withdraw specified funds with SubscriptionManager contract", async () => {
     let sentAmount = web3.toWei(1, 'ether');
     subMgr.sendTransaction({value: sentAmount, from: accounts[9]});
@@ -79,9 +72,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(withdrawAmount, (endingBalance + transactionCosts - startingBalance), "Specified amount in contract is withdrawn");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be request a payment from a subscriber after 30 days have passed.
-  */
+  //The owner of a SubscriptionManager should be request a payment from a subscriber after 30 days have passed.
   it ("Owner should be able to requestPayment from SubscriptionWallet", async () => {
     //Create a subscriptionWallet, fund it and subscribe
     subWalletFactory = await SubscriptionWalletFactory.deployed();
@@ -102,9 +93,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(await web3.eth.getBalance(subMgrAddress).toNumber(), endingBalance, "Balance should increase by Subscription Price");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to get a list of all of the subscribers.
-  */
+  //The owner of a SubscriptionManager should be able to get a list of all of the subscribers.
   it ("Owner should be able to request all subscribers", async () => {
     // Create three subscription wallets and subscribe to SubMgr
     subWalletFactory = await SubscriptionWalletFactory.deployed();
@@ -132,9 +121,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(subscribers[2], subWallet3Address, "Third subscriber is subWallet3");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to check the status of any subscriber address.
-  */
+  //The owner of a SubscriptionManager should be able to check the status of any subscriber address.
   it ("Owner should be able to check on the subscription status of any address", async () => {
     subWalletFactory = await SubscriptionWalletFactory.deployed();
     subWallet1Txn = await subWalletFactory.createSubscriptionWallet({from: accounts[2]});
@@ -148,9 +135,7 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(subscriptionStatus, true, "Subscription status should return true if owner calls it");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to check when the last payment was made by a subscriber.
-  */
+  //The owner of a SubscriptionManager should be able to check when the last payment was made by a subscriber.
   it ("Owner should be able to check on the lastPaymentDate of any address", async () => {
     subWalletFactory = await SubscriptionWalletFactory.deployed();
     subWallet1Txn = await subWalletFactory.createSubscriptionWallet({from: accounts[2]});
@@ -165,18 +150,14 @@ contract('SubscriptionManager', async (accounts) =>  {
     assert.equal(subscriptionLastPaymentDate, subscribeTxnTime, "Payment date should be 0 for now");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to change the subscriptionName of a given contract successfully.
-  */
+  //The owner of a SubscriptionManager should be able to change the subscriptionName of a given contract successfully.
   it ("Owner should be able to modify the name of the subscription", async () => {
     let newName = "newName";
     subMgr.ownerUpdateName(newName, {from: accounts[1]});
     assert.equal(newName, await subMgr.subscriptionName(), "Name should be updated");
   });
 
-  /**
-    * The owner of a SubscriptionManager should be able to change the subscriptionPrice of a given contract.
-  */
+  //The owner of a SubscriptionManager should be able to change the subscriptionPrice of a given contract.
   it ("Owner should be able to modify the price of the subscription", async () => {
     let newPrice = 1000000;
     subMgr.ownerUpdatePrice(newPrice, {from: accounts[1]});

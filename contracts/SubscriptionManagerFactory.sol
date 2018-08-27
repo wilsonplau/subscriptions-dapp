@@ -2,6 +2,7 @@ pragma solidity ^0.4.23;
 import './SubscriptionManager.sol';
 
 /** @title Subscription Manager Factory Contract
+  * @author Wilson Lau
 */
 contract SubscriptionManagerFactory {
   address public owner; // Owner is the person deploying the SubscriptionManagerFactory contract
@@ -34,6 +35,10 @@ contract SubscriptionManagerFactory {
     emit newSubscriptionManagerCreated(newSubscriptionManager);
   }
 
+  /**
+    * @notice Allows anyone to get a list of all subscriptions ever created by the SubscriptionManagerFactory
+    * @return Returns as an array of addresses
+  */
   function getAllSubscriptions()
     public
     view

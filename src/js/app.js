@@ -106,7 +106,7 @@ var SubscriptionWalletFactory = {
   createSubscriptionWallet: function() {
     App.contracts.subWalletFactory.methods.createSubscriptionWallet().send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("createSubscriptionWallet" + confirmationNumber + receipt);
         SubscriptionWalletFactory.getSubscriptionWallets();
       }
@@ -129,7 +129,7 @@ var SubscriptionManagerFactory = {
   createSubscriptionManager: function(name, price) {
     App.contracts.subMgrFactory.methods.createSubscriptionManager(name, price).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("createSubscriptionManager:" + confirmationNumber + receipt);
         SubscriptionManagerFactory.getSubscriptionManagers();
       }
@@ -161,8 +161,10 @@ var SubscriptionManager = {
     var subManagerInstance = new web3.eth.Contract(App.contracts.subMgrABI, App.subscriptionManagers[App.subscriptionManagerPosition])
     subManagerInstance.methods.requestPayment(address).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      console.log("requestPayment:" + confirmationNumber + receipt);
-      View.updateWalletBalance(address);
+      if (confirmationNumber == 5 ) {
+        console.log("requestPayment:" + confirmationNumber + receipt);
+        View.updateWalletBalance(address);
+      }
     });
   },
   withdrawBalanceAmount: function(amount) {
@@ -170,7 +172,7 @@ var SubscriptionManager = {
     var subManagerInstance = new web3.eth.Contract(App.contracts.subMgrABI, address)
     subManagerInstance.methods.withdrawBalanceAmount(amount).send({from: App.accounts[0], gas: 99999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("withdrawBalanceAmount" + amount + confirmationNumber + receipt);
         View.updateWalletBalance(address);
       }
@@ -181,7 +183,7 @@ var SubscriptionManager = {
     var subManagerInstance = new web3.eth.Contract(App.contracts.subMgrABI, address)
     subManagerInstance.methods.withdrawBalance().send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("withdrawBalance" + confirmationNumber + receipt);
         View.updateWalletBalance(address);
       }
@@ -192,7 +194,7 @@ var SubscriptionManager = {
     subManagerInstance.methods.ownerUpdateName(name).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
       console.log("ownerUpdateName:" + name + confirmationNumber + receipt);
-      //Other callbacks
+      View.updateSubscriptionName(App.subscriptionManagers[App.subscriptionManagerPosition], name);
     });
   },
   ownerUpdatePrice: function(price) {
@@ -200,7 +202,6 @@ var SubscriptionManager = {
     subManagerInstance.methods.ownerUpdatePrice(price).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
       console.log("ownerUpdatePrice:" + name + confirmationNumber + receipt);
-      //Other callbacks
     });
   },
   ownerGetSubscribers: function() {
@@ -237,7 +238,7 @@ var SubscriptionWallet = {
     var subWalletInstance = new web3.eth.Contract(App.contracts.subWalletABI, App.subscriptionWallets[App.subscriptionWalletPosition]);
     subWalletInstance.methods.subscribe(address).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("Subscribe:" + confirmationNumber + receipt);
         App.subscriptionStatus[address] = true;
         View.updateWalletBalance(address);
@@ -250,7 +251,7 @@ var SubscriptionWallet = {
     var subWalletInstance = new web3.eth.Contract(App.contracts.subWalletABI, App.subscriptionWallets[App.subscriptionWalletPosition]);
     subWalletInstance.methods.unsubscribe(address).send({from: App.accounts[0], gas: 9999999})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("Subscribe:" + confirmationNumber + receipt);
         App.subscriptionStatus[address] = false;
         View.updateSubscriptionStatus(address, false);
@@ -280,7 +281,7 @@ var SubscriptionWallet = {
     var address = App.subscriptionWallets[App.subscriptionWalletPosition]
     var tx = web3.eth.sendTransaction({from: App.accounts[0], to: address, value: web3.utils.toWei("1", "ether")})
     .on("confirmation", function(confirmationNumber, receipt) {
-      if (confirmationNumber == 3) {
+      if (confirmationNumber == 5) {
         console.log("fundWallet" + confirmationNumber + receipt);
         View.updateWalletBalance(address);
       }
@@ -454,7 +455,7 @@ var View = {
       var subscriberLastPaymentDate = document.createElement('h2');
       subscriberLastPaymentDate.className = "subscriber-date-heading";
       subscriberLastPaymentDate.dataset.address = address;
-      subscriberLastPaymentDate.textContent = new Date(parseInt(App.subscriptionPaymentDate[address]*1000));
+      subscriberLastPaymentDate.textContent = new Date(parseInt(App.subscriptionPaymentDate[address]*1000)).toLocaleDateString();
 
       // Create button for requestPayment
       var requestPaymentButton = document.createElement('button');

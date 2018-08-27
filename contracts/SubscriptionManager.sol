@@ -141,6 +141,7 @@ contract SubscriptionManager {
   {
     suspended = !suspended;
   }
+
   /**
     * @notice Allows the owner to update the price of the subscription
     * @dev Price can be set to 0.
@@ -170,7 +171,6 @@ contract SubscriptionManager {
     emit subscriptionNameUpdated (_name);
   }
 
-
   /**
     * @notice Owner can get an array of all subscribers
     * @return An array of addresses (SubscriptionWallet addresses)
@@ -183,6 +183,7 @@ contract SubscriptionManager {
   {
     return subscriberAddresses;
   }
+
   /**
     * @notice Allows owner to check subscription status of a specific address
     * @return true if the subscription is active, false if not; reverts if subscriber doesn't exist
@@ -200,6 +201,7 @@ contract SubscriptionManager {
       return false;
     }
   }
+
   /**
     * @notice Allows owner to check subscription status of a specific address
     * @return lastPaymentDate as a uint
